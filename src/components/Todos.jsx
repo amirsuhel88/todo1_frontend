@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { getTodo } from "../redux/todoSlice";
+import { deleteTodo, getTodo } from "../redux/todoSlice";
 
 function Todos() {
   const dispatch = useDispatch();
@@ -23,6 +23,16 @@ function Todos() {
     };
     fetchData();
   }, [dispatch]);
+
+  const handleDelete = (id) => {
+    axios
+      .delete("http://localhost:3001/api/todo/" + id)
+      .then((res) => {
+        dispatch(deleteTodo({ id }));
+        // console.log(useSelector((state) => state.todos.todos));
+      })
+      .catch((err) => console.log(err));
+  };
 
   return (
     <div className="container mt-5">
@@ -48,7 +58,12 @@ function Todos() {
 
                 <td>
                   <button className="btn btn-success mr-2 me-2">UPDATE</button>
-                  <button className="btn btn-danger">Delete</button>
+                  <button
+                    onClick={() => handleDelete(todo.id)}
+                    className="btn btn-danger"
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))
