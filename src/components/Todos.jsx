@@ -3,13 +3,14 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteTodo, getTodo } from "../redux/todoSlice";
+import { useNavigate } from "react-router-dom";
 
 function Todos() {
   const dispatch = useDispatch();
   const todos = useSelector((state) => state.todos.todos);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -23,7 +24,9 @@ function Todos() {
     };
     fetchData();
   }, [dispatch]);
-
+  const handleAddNewTodo = () => {
+    navigate("/new-todo");
+  };
   const handleDelete = (id) => {
     axios
       .delete("http://localhost:3001/api/todo/" + id)
@@ -34,11 +37,17 @@ function Todos() {
       .catch((err) => console.log(err));
   };
 
+  const handleUpdate = (id) => {
+    navigate(`/edit-todo/${id}`);
+  };
+
   return (
     <div className="container mt-5">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2>todos List</h2>
-        <button className="btn btn-primary">Add +</button>
+        <button onClick={handleAddNewTodo} className="btn btn-primary">
+          Add +
+        </button>
       </div>
 
       {loading && <div className="text-center">Loading...</div>}
@@ -57,7 +66,12 @@ function Todos() {
                 <td>{todo.todo}</td>
 
                 <td>
-                  <button className="btn btn-success mr-2 me-2">UPDATE</button>
+                  <button
+                    onClick={() => handleUpdate(todo.id)}
+                    className="btn btn-success mr-2 me-2"
+                  >
+                    UPDATE
+                  </button>
                   <button
                     onClick={() => handleDelete(todo.id)}
                     className="btn btn-danger"

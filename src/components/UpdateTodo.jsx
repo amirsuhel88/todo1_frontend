@@ -1,34 +1,38 @@
 import React, { useState } from "react";
-import { addTodo } from "../redux/todoSlice";
-import { useDispatch } from "react-redux";
+import { addTodo, updateTodo } from "../redux/todoSlice";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-function CreateTodo() {
-  const [todo, setTodo] = useState();
+function UpdateTodo() {
+  const { id } = useParams();
+  const todos = useSelector((state) => state.todos.todos);
+  const todoo = todos.find((t) => t.id === id);
+  console.log(todoo);
+  const [todo, setTodo] = useState(todoo.todo);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const handleSubmit = (e) => {
+  const handleUpdate = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:3001/api/todos", { todo })
+      .put("http://localhost:3001/api/todo/" + id, { todo })
       .then((res) => {
-        dispatch(addTodo(res.data));
+        dispatch(updateTodo(todo));
         console.log(res.data);
         navigate("/");
       })
       .catch((err) => console.log(err));
   };
-
   return (
     <div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleUpdate}>
         <h2>New Todo</h2>
         <label htmlFor="">Your Task</label>
         <input
           type="text"
           placeholder="Enter your task here"
           className="form-control"
+          value={todo}
           onChange={(e) => setTodo(e.target.value)}
         />
         <button className="btn btn-success">Submit</button>
@@ -37,4 +41,4 @@ function CreateTodo() {
   );
 }
 
-export default CreateTodo;
+export default UpdateTodo;
