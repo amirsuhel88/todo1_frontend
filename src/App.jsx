@@ -8,8 +8,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Users />}></Route>
-        <Route path="/todos" element={<Todos />}></Route>
+        <Route path="/users" element={<Users />}></Route>
+        <Route path="/" element={<Todos />}></Route>
         <Route path="/new-todo" element={<CreateTodo />}></Route>
       </Routes>
     </BrowserRouter>
